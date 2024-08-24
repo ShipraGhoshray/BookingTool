@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bookingTool.dto.RoomDTO;
-import com.example.bookingTool.entity.Room;
 import com.example.bookingTool.service.RoomService;
 
 @RestController
@@ -35,8 +34,8 @@ public class RoomController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<RoomDTO> addRoom(@RequestBody Room room) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.addRoom(room));
+    public ResponseEntity<RoomDTO> addRoom(@RequestBody RoomDTO roomDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.addRoom(roomDto));
     }
 
     @DeleteMapping("/{id}")

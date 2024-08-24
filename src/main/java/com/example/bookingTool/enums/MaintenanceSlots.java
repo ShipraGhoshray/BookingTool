@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum MaintenanceSlots {
 
-	A("09:00", "09:15"),
-	B("13:00", "13:15"),
-	C("17:00", "17:15");
+	A("09:00:00", "09:15:00"),
+	B("13:00:00", "13:15:00"),
+	C("17:00:00", "17:15:00");
 
 	private final String startTime;
 	private final String endTime;

@@ -2,7 +2,6 @@ package com.example.bookingTool.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +20,9 @@ public class ReservationDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
     private long id;
-    private LocalDateTime date;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String date;
+    private String startTime;
+    private String endTime;
+    private int noOfPeople;
     private RoomDTO room;
 }

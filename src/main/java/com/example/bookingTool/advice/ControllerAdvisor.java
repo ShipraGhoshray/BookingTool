@@ -27,9 +27,8 @@ public class ControllerAdvisor {
 	
 	@ExceptionHandler({CustomGlobalException.class})
 	public ResponseEntity<Object> handleCustomGlobalException(CustomGlobalException e, WebRequest request) {
-		log.error("Error {}/{}", e.getCode(), e.getMessage());
+		log.error("Error {}/{}", e.getCode().toString(), e.getMessage());
 		StatusResponseDTO statusResponse = StatusResponseDTO.builder().code(e.getCode()).message(e.getMessage()).build();
-		//StatusResponseDTO statusResponse = new StatusResponseDTO(e.getCode(), e.getMessage());
 		return new ResponseEntity<>(statusResponse, e.getHttpStatus());
 	}
 
@@ -40,8 +39,6 @@ public class ControllerAdvisor {
                 .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + " from " + request)
                 .build();
-		//StatusResponseDTO statusResponse = new StatusResponseDTO(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-			//	HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase() + " from " + request);
 		return new ResponseEntity<>(statusResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -49,8 +46,6 @@ public class ControllerAdvisor {
 	public ResponseEntity<Object> handleMException(MethodArgumentNotValidException e, WebRequest request) {
 		StatusResponseDTO statusResponse = StatusResponseDTO.builder().code("APP_400")
 				.message(Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage()).build();
-		//StatusResponseDTO statusResponse = new StatusResponseDTO("APP_400",
-			//	Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
 		return new ResponseEntity<>(statusResponse, HttpStatus.BAD_REQUEST);
 	}
 

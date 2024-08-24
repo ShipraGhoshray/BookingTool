@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.bookingTool.entity.Reservation;
+import com.example.bookingTool.entity.ReservationEntity;
 
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
    //List<Reservation>findByRoom(long roomId);
-   List<Reservation>findByStartTimeAndEndTime(LocalDateTime startTime, LocalDateTime endTime);
+   List<ReservationEntity>findByStartTimeAndEndTime(LocalDateTime startTime, LocalDateTime endTime);
 }

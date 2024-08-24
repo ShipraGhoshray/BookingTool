@@ -15,14 +15,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "roomReservation")
-public class Reservation implements Serializable{
+public class ReservationEntity implements Serializable{
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -54,9 +53,9 @@ public class Reservation implements Serializable{
 
     @ManyToOne()
     @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+    private RoomEntity room;
 
-    public Reservation() {
+    public ReservationEntity() {
     }
     
     public long getId() {
@@ -97,11 +96,11 @@ public class Reservation implements Serializable{
 		this.endTime = endTime;
 	}
 
-	public Room getRoom() {
+	public RoomEntity getRoom() {
 		return room;
 	}
     
-    public void setRoom(Room room) {
+    public void setRoom(RoomEntity room) {
         this.room = room;
     }
     

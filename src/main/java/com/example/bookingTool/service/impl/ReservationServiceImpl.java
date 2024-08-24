@@ -14,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.bookingTool.dto.ReservationDTO;
-import com.example.bookingTool.entity.Maintainence;
-import com.example.bookingTool.entity.Reservation;
-import com.example.bookingTool.entity.Room;
+import com.example.bookingTool.entity.MaintainenceEntity;
+import com.example.bookingTool.entity.ReservationEntity;
+import com.example.bookingTool.entity.RoomEntity;
 import com.example.bookingTool.handler.CustomGlobalException;
 import com.example.bookingTool.mapper.ReservationMapper;
 import com.example.bookingTool.repository.MaintainenceRepository;
@@ -39,15 +39,15 @@ public class ReservationServiceImpl implements ReservationService{
 
     public List<ReservationDTO> listReservations() {
     	List<ReservationDTO> processedReservations = new ArrayList<>();
-    	List<Reservation> allReservations = reservationRepository.findAll();
-        for (Reservation reservation : allReservations) {
+    	List<ReservationEntity> allReservations = reservationRepository.findAll();
+        for (ReservationEntity reservation : allReservations) {
             processedReservations.add(ReservationMapper.convertToDTO(reservation));
         }
         return processedReservations;
     }
 
     public ReservationDTO getReservationById(long id) {
-    	Optional<Reservation> reservation = reservationRepository.findById(id);
+    	Optional<ReservationEntity> reservation = reservationRepository.findById(id);
         return ReservationMapper.convertToDTO(reservation.get());
     }
 
@@ -58,13 +58,14 @@ public class ReservationServiceImpl implements ReservationService{
         reservationRepository.deleteById(id);
     }
     
-    public ReservationDTO addReservation(Reservation reservation) {
+    public ReservationDTO addReservation(ReservationDTO reservationDto) {
 
+    	ReservationEntity reservation = ReservationMapper.toEntity(reservationDto);
     	if(isValidReservation(reservation)) {
-        	List<Room> roomList =  roomRepository.findAll();
-        	List<Room> availableRoomList = roomList.stream().filter(room -> 
+        	List<RoomEntity> roomList =  roomRepository.findAll();
+        	List<RoomEntity> availableRoomList = roomList.stream().filter(room -> 
         	room.isAvailability() && reservation.getNoOfPeople() <= room.getRoomCapacity()).collect(Collectors.toList());
-        	AtomicReference<Room> choosenRoom = new AtomicReference<Room>();
+        	AtomicReference<RoomEntity> choosenRoom = new AtomicReference<RoomEntity>();
         	Integer lastCapacity = reservation.getNoOfPeople();
         	availableRoomList.forEach(avRoom -> {
         		if((choosenRoom.get()==null && lastCapacity <= avRoom.getRoomCapacity())
@@ -81,7 +82,7 @@ public class ReservationServiceImpl implements ReservationService{
 		return null;
     }
 
-    private boolean isValidReservation(Reservation reservation) {
+    private boolean isValidReservation(ReservationEntity reservation) {
 
     	LocalDate currentDate = LocalDateTime.now().toLocalDate();
         if (reservation.getStartTime().toLocalDate().isAfter(currentDate) 
@@ -92,6 +93,9 @@ public class ReservationServiceImpl implements ReservationService{
         		|| reservation.getEndTime().toLocalDate().isBefore(currentDate)) {
         	throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_INVALID_DATE, 
         			"Cannot make a reservation for a past date.", HttpStatus.BAD_REQUEST);
+        }else if (reservation.getEndTime().isBefore(reservation.getStartTime())) {
+        	throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_INVALID_DATE, 
+        			"Reservation end time must be after start time.", HttpStatus.BAD_REQUEST);
         }
     
     	// Check if start and end time is in multiple of 15 minutes
@@ -109,7 +113,7 @@ public class ReservationServiceImpl implements ReservationService{
         } 
         
     	//Validating overlap with Maintenance    	
-    	List<Maintainence> maintenanceList = maintenanceRepository.findAll();
+    	List<MaintainenceEntity> maintenanceList = maintenanceRepository.findAll();
     	maintenanceList.forEach(mSlot -> {
     		if(isOverlappingWithMaintenanceSlot(reservation.getStartTime(), reservation.getEndTime(),
     				mSlot.getStartTime(), mSlot.getEndTime())) {
@@ -119,8 +123,8 @@ public class ReservationServiceImpl implements ReservationService{
     		}
     	});
     	//Overlap reservation
-    	List<Reservation> allReservations = reservationRepository.findAll();
-    	for (Reservation existingReservation : allReservations) {
+    	List<ReservationEntity> allReservations = reservationRepository.findAll();
+    	for (ReservationEntity existingReservation : allReservations) {
     		if (isExistingReservationsOverlapping(existingReservation.getStartTime(), existingReservation.getEndTime(),
     				reservation.getStartTime(), reservation.getEndTime())) {
     			throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_NO_SLOT_AVAIABLE, 

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bookingTool.dto.ReservationDTO;
-import com.example.bookingTool.entity.Reservation;
 import com.example.bookingTool.service.ReservationService;
 
 @RestController
@@ -36,7 +35,7 @@ public class ReservationController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ReservationDTO> addReservation(@RequestBody Reservation reservation) {
+    public ResponseEntity<ReservationDTO> addReservation(@RequestBody ReservationDTO reservation) {
     	return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.addReservation(reservation));
     }
 

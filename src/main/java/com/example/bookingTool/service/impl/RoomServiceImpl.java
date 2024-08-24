@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.bookingTool.dto.RoomDTO;
-import com.example.bookingTool.entity.Room;
+import com.example.bookingTool.entity.RoomEntity;
 import com.example.bookingTool.handler.CustomGlobalException;
 import com.example.bookingTool.mapper.RoomMapper;
 import com.example.bookingTool.repository.RoomRepository;
@@ -23,23 +23,23 @@ public class RoomServiceImpl implements RoomService{
     RoomRepository roomRepository;
 
        public List<RoomDTO> listRooms() {
-        List<Room> allRooms = roomRepository.findAll();
+        List<RoomEntity> allRooms = roomRepository.findAll();
         List<RoomDTO> processedRooms = new ArrayList<>();
-        for (Room room : allRooms) {
+        for (RoomEntity room : allRooms) {
             processedRooms.add(RoomMapper.convertToDTO(room));
         }
         return processedRooms;
     }
 
        public List<RoomDTO> getRoomByName(String name) {
-    	   List<Room> allRooms = roomRepository.findByName(name);
+    	   List<RoomEntity> allRooms = roomRepository.findByName(name);
     	   if(allRooms.isEmpty()) {
     		   throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_ROOM_NOT_FOUND, 
-    				   "Room not found for name: " + name, HttpStatus.BAD_REQUEST);
+    				   "Room not found for name: " + name, HttpStatus.NOT_FOUND);
     	   }
 
     	   List<RoomDTO> processedRooms = new ArrayList<>();
-    	   for (Room room : allRooms) {
+    	   for (RoomEntity room : allRooms) {
     		   processedRooms.add(RoomMapper.convertToDTO(room));
     	   }
     	   return processedRooms;
@@ -53,19 +53,27 @@ public class RoomServiceImpl implements RoomService{
         roomRepository.deleteById(id);
     }
 
-    public RoomDTO addRoom(Room room) {
-        String roomName = room.getName().toLowerCase();
-        Optional<Room> existingRoom = roomRepository.findByName(roomName)
+    public RoomDTO addRoom(RoomDTO roomDto) {
+        if (null == roomDto.getRoomName() || roomDto.getRoomName().isEmpty()) {
+            throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_ROOM_NAME_EMPTY, 
+            		"Room name must not be blank", HttpStatus.BAD_REQUEST);
+        }
+        
+        if (roomDto.getRoomCapacity() < 3) {
+            throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_ROOM_CAPACITY_EMPTY, 
+            		"Minimum Room capacity is 3", HttpStatus.BAD_REQUEST);
+        }
+        
+        Optional<RoomEntity> existingRoom = roomRepository.findByName(roomDto.getRoomName())
                 .stream()
-                .filter(r -> r.getName().equalsIgnoreCase(roomName))
+                .filter(r -> r.getName().equalsIgnoreCase(roomDto.getRoomName()))
                 .findFirst();
         if (existingRoom.isPresent()) {
             throw new CustomGlobalException(Constants.CUSTOM_EXCEPTION_ROOM_ALREADY_EXISTS, 
-            		"Room with the name '" + room.getName() + "' already exists", HttpStatus.BAD_REQUEST);
+            		"Room with the name '" + roomDto.getRoomName() + "' already exists", HttpStatus.BAD_REQUEST);
         }
-        room.setName(roomName);
-        room.setAvailability(true);
-        Room roomEntity = roomRepository.save(room);
+        roomDto.setAvailability(true);
+        RoomEntity roomEntity = roomRepository.save(RoomMapper.toEntity(roomDto));
         return RoomMapper.convertToDTO(roomEntity);
     }
 }

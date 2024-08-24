@@ -75,7 +75,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"roomId\": 1,\r\n  \"name\": \"Amaze\",\r\n  \"roomCapacity\": 3\r\n  }",
+							"raw": "{\r\n    \"roomName\": \"Amaze\",\r\n    \"roomCapacity\": \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -152,7 +152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  //\"startTime\": \"2024-08-20 09:00:00\",\r\n  //\"startTime\": \"2024-08-20 09:03:00\",\r\n  \"startTime\": \"2024-08-20 09:00:00\",\r\n  \"endTime\": \"2024-08-20 09:30:00\",\r\n  \"noOfPeople\": 5\r\n  }",
+							"raw": "{\r\n    \"startTime\": \"2024-08-21 17:30:00\",\r\n    \"endTime\": \"2024-08-21 18:30:00\",\r\n    \"noOfPeople\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -28,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "room")
-public class Room implements Serializable{
+public class RoomEntity implements Serializable{
 	
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -50,7 +50,7 @@ public class Room implements Serializable{
     private Integer roomCapacity;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations;
+    private List<ReservationEntity> reservations;
 
 	/*public Room(long roomId,
 			@NotBlank(message = "Conference room name is required") @Size(min = 2, max = 20) String name,
@@ -63,7 +63,7 @@ public class Room implements Serializable{
 		this.availability = availability;
 		this.roomCapacity = roomCapacity;
 		this.reservations = reservations;
-	}*/
+	}
 
 	public long getRoomId() {
 		return roomId;
@@ -103,5 +103,5 @@ public class Room implements Serializable{
 
 	public void setReservations(List<Reservation> reservations) {
 		this.reservations = reservations;
-	}
+	}*/
 }
